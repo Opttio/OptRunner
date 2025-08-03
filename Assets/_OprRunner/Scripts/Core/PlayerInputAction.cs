@@ -117,6 +117,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Roll"",
+                    ""type"": ""Button"",
+                    ""id"": ""79650ef7-8c81-4075-95e9-2093149d2f95"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -174,6 +183,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dadf45a0-905b-4052-8b67-a359423cf215"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +205,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_PlayerMap_ToLeft = m_PlayerMap.FindAction("ToLeft", throwIfNotFound: true);
         m_PlayerMap_ToRight = m_PlayerMap.FindAction("ToRight", throwIfNotFound: true);
         m_PlayerMap_Jump = m_PlayerMap.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerMap_Roll = m_PlayerMap.FindAction("Roll", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -268,6 +289,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_ToLeft;
     private readonly InputAction m_PlayerMap_ToRight;
     private readonly InputAction m_PlayerMap_Jump;
+    private readonly InputAction m_PlayerMap_Roll;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMap".
     /// </summary>
@@ -291,6 +313,10 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerMap/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_PlayerMap_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMap/Roll".
+        /// </summary>
+        public InputAction @Roll => m_Wrapper.m_PlayerMap_Roll;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -326,6 +352,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Roll.started += instance.OnRoll;
+            @Roll.performed += instance.OnRoll;
+            @Roll.canceled += instance.OnRoll;
         }
 
         /// <summary>
@@ -346,6 +375,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Roll.started -= instance.OnRoll;
+            @Roll.performed -= instance.OnRoll;
+            @Roll.canceled -= instance.OnRoll;
         }
 
         /// <summary>
@@ -407,5 +439,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Roll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRoll(InputAction.CallbackContext context);
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using _OprRunner.Scripts.Core.ConditionsActionsExecutors;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,20 +18,37 @@ namespace _OprRunner.Scripts.Character
         [Header("Animation")]
         [SerializeField] private CharacterRunnerAnimation _characterRunnerAnimation;
         
+        public float GroundCheckDistance => _groundCheckDistance;
+        
         private PlayerInputAction _playerInputAction;
         private Transform[] _stripes;
         private int _currentStripeIndex = 1;
         private Coroutine _smoothMoveRoutine;
         private Coroutine _jumpRoutine;
 
+        private ConditionActionExecutor _executor;
+
         private void Awake()
         {
             _playerInputAction = new PlayerInputAction();
             _playerInputAction.PlayerMap.ToLeft.performed += ToLeft;
             _playerInputAction.PlayerMap.ToRight.performed += ToRight;
-            _playerInputAction.PlayerMap.Jump.performed += OnJump;
             
             AssignStripes();
+        }
+
+        private void Start()
+        {
+            _executor = new ConditionActionExecutor();
+            var jumpCondition = new AndCondition(new IsGroundCondition(transform, _groundCheckDistance),
+                new JumpInputCondition(_playerInputAction));
+            var jumpAction = new JumpAction(transform, _jumpUpPosition, _jumpDuration, _characterRunnerAnimation, this);
+            _executor.AddRule(jumpCondition, jumpAction);
+        }
+
+        private void Update()
+        {
+            _executor.Execute();
         }
 
         private void OnEnable()
@@ -82,8 +100,6 @@ namespace _OprRunner.Scripts.Character
             if (_smoothMoveRoutine != null)
                 StopCoroutine(_smoothMoveRoutine);
             _smoothMoveRoutine = StartCoroutine(SmoothMove(targetPosition, _leftRightDuration));
-            
-            
         }
 
         private IEnumerator SmoothMove(Vector3 targetPosition, float baseDuration)
@@ -103,54 +119,6 @@ namespace _OprRunner.Scripts.Character
             }
             transform.position = new Vector3(targetPosition.x, transform.position.y, transform.position.z);
             _smoothMoveRoutine = null;
-        }
-
-        public bool _isGrounded()
-        {
-            Vector3 gapPosition = transform.position + Vector3.up * 0.1f;
-            if (Physics.Raycast(gapPosition, Vector3.down, _groundCheckDistance))
-                return true;
-            else
-                return false;
-        }
-
-        private void Jump()
-        {
-            if (!_jumpUpPosition)
-            {
-                Debug.LogWarning("Позиція для стрибку не визначена!");
-                return;
-            }
-            if (_jumpRoutine != null)
-                StopCoroutine(_jumpRoutine);
-            Vector3 targetPosition = new Vector3(transform.position.x, _jumpUpPosition.position.y, transform.position.z);
-            _jumpRoutine = StartCoroutine(SmoothJump(targetPosition, _jumpDuration));
-        }
-
-        private IEnumerator SmoothJump(Vector3 targetPosition, float jumpDuration)
-        {
-            Vector3 startPosition = transform.position;
-            float elapsed = 0f;
-            while (elapsed < jumpDuration)
-            {
-                elapsed += Time.deltaTime;
-                float lerpValue = elapsed / jumpDuration;
-                float newY = Mathf.Lerp(startPosition.y, targetPosition.y, lerpValue);
-                transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-                yield return null;
-            }
-            transform.position = new Vector3(transform.position.x, targetPosition.y, transform.position.z);
-            elapsed = 0f;
-            while (elapsed < jumpDuration)
-            {
-                elapsed += Time.deltaTime;
-                float lerpValue = elapsed / jumpDuration;
-                float newY = Mathf.Lerp(targetPosition.y, startPosition.y, lerpValue);
-                transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-                yield return null;
-            }
-            transform.position = new Vector3(transform.position.x, startPosition.y, transform.position.z);
-            _jumpRoutine = null;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -176,15 +144,6 @@ namespace _OprRunner.Scripts.Character
             {
                 _currentStripeIndex++;
                 MoveToStripe(_currentStripeIndex);
-            }
-        }
-
-        private void OnJump(InputAction.CallbackContext obj)
-        {
-            if (_isGrounded())
-            {
-                Jump();
-                _characterRunnerAnimation.TriggerJumpAnimation();
             }
         }
     }

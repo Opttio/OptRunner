@@ -6,12 +6,18 @@ namespace _OprRunner.Scripts.Character
     {
         [SerializeField] private CharacterRunnerController _characterRunnerController;
         private Animator _animator;
+        private IsGroundCondition _isGroundCondition;
         private static readonly int JumpStartTrigger =  Animator.StringToHash("JumpStart");
         private static readonly int IsGroundedBool = Animator.StringToHash("isGrounded");
         
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+        }
+
+        private void Start()
+        {
+            _isGroundCondition = new IsGroundCondition(_characterRunnerController.transform, _characterRunnerController.GroundCheckDistance);
         }
 
         private void Update()
@@ -21,7 +27,7 @@ namespace _OprRunner.Scripts.Character
 
         private void PlayLandAnimation()
         {
-            _animator.SetBool(IsGroundedBool, _characterRunnerController._isGrounded());
+            _animator.SetBool(IsGroundedBool, _isGroundCondition.IsMet());
         }
         
         public void TriggerJumpAnimation()
