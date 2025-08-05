@@ -5,10 +5,17 @@ namespace _OprRunner.Scripts.Character
     public class JumpInputCondition : ICondition
     {
         private bool _jumpPressed;
+        private IsGroundCondition _isGroundCondition;
 
-        public JumpInputCondition(PlayerInputAction inputAction)
+        public JumpInputCondition(PlayerInputAction inputAction, IsGroundCondition isGroundCondition)
         {
-            inputAction.PlayerMap.Jump.performed += ctx => _jumpPressed = true;
+            _isGroundCondition = isGroundCondition;
+            
+            inputAction.PlayerMap.Jump.performed += ctx =>
+            {
+                if (_isGroundCondition.IsMet())
+                    _jumpPressed = true;
+            };
         }
 
         public bool IsMet()

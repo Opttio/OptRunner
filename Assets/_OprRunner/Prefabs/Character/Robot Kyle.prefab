@@ -946,6 +946,7 @@ GameObject:
   - component: {fileID: 6713189050440154191}
   - component: {fileID: 2325163338928046674}
   - component: {fileID: 6334159292790881514}
+  - component: {fileID: 4039427550694564426}
   m_Layer: 0
   m_Name: Robot Kyle
   m_TagString: Untagged
@@ -989,6 +990,9 @@ MonoBehaviour:
   _groundCheckDistance: 0.2
   _jumpDuration: 0.4
   _jumpUpPosition: {fileID: 6021761169353119708}
+  _rollDuration: 1
+  _characterHighCollider: {fileID: 6334159292790881514}
+  _characterLowCollider: {fileID: 4039427550694564426}
   _characterRunnerAnimation: {fileID: 6713189050440154191}
 --- !u!114 &6713189050440154191
 MonoBehaviour:
@@ -1048,6 +1052,27 @@ CapsuleCollider:
   m_Height: 1.7717595
   m_Direction: 1
   m_Center: {x: 0, y: 0.9013479, z: 0}
+--- !u!65 &4039427550694564426
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4808775708489876795}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 0.52, y: 0.48212397, z: 0.52}
+  m_Center: {x: 0, y: 0.258938, z: 0}
 --- !u!1 &5135202399773379234
 GameObject:
   m_ObjectHideFlags: 0

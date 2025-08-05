@@ -64,7 +64,6 @@ namespace _OprRunner.Scripts.Character
         {
             Jump();
             _characterRunnerAnimation.TriggerJumpAnimation();
-            Debug.Log("JumpAction: виконано стрибок");
         }
     }
 }

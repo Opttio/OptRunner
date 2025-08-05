@@ -1,5 +1,8 @@
 using System.Collections;
 using _OprRunner.Scripts.Core.ConditionsActionsExecutors;
+using _OprRunner.Scripts.Core.EventBus;
+using _OprRunner.Scripts.Environment.Obstacles;
+using _OprRunner.Scripts.UI.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,6 +18,10 @@ namespace _OprRunner.Scripts.Character
         [SerializeField] private float _groundCheckDistance = 0.2f;
         [SerializeField] private float _jumpDuration = 1f;
         [SerializeField] private Transform _jumpUpPosition;
+        [Header("Roll")]
+        [SerializeField] private float _rollDuration;
+        [SerializeField] private Collider _characterHighCollider;
+        [SerializeField] private Collider _characterLowCollider;
         [Header("Animation")]
         [SerializeField] private CharacterRunnerAnimation _characterRunnerAnimation;
         
@@ -25,6 +32,7 @@ namespace _OprRunner.Scripts.Character
         private int _currentStripeIndex = 1;
         private Coroutine _smoothMoveRoutine;
         private Coroutine _jumpRoutine;
+        private readonly int _startAttempts = 3;
 
         private ConditionActionExecutor _executor;
 
@@ -41,9 +49,16 @@ namespace _OprRunner.Scripts.Character
         {
             _executor = new ConditionActionExecutor();
             var jumpCondition = new AndCondition(new IsGroundCondition(transform, _groundCheckDistance),
-                new JumpInputCondition(_playerInputAction));
+                new JumpInputCondition(_playerInputAction, new IsGroundCondition(transform, _groundCheckDistance)));
             var jumpAction = new JumpAction(transform, _jumpUpPosition, _jumpDuration, _characterRunnerAnimation, this);
+            var rollCondition = new AndCondition(new IsGroundCondition(transform, _groundCheckDistance),
+                new RollInputCondition(_playerInputAction, new IsGroundCondition(transform, _groundCheckDistance)));
+            var rollAction = new RollAction(_rollDuration, _characterHighCollider,_characterLowCollider, _characterRunnerAnimation, this);
             _executor.AddRule(jumpCondition, jumpAction);
+            _executor.AddRule(rollCondition, rollAction);
+            
+            GameModels.Attempt = _startAttempts;
+            GameEventBus.ChangeAttempt(GameModels.Attempt);
         }
 
         private void Update()
@@ -125,8 +140,30 @@ namespace _OprRunner.Scripts.Character
         {
             if (other.CompareTag("Obstacle"))
             {
-                Debug.Log("Персонаж увійшов у тригер перешкоди");
+                GameModels.ViewId = 2;
+                GameEventBus.ChangeView(GameModels.ViewId);
+                GameModels.IsPlaying = false;
+                GameEventBus.SwitchGameStatus(GameModels.IsPlaying);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                
+                var obstacle = other.GetComponentInParent<ObstaclesDestroyer>();
+                if (obstacle) 
+                    Destroy(obstacle.gameObject);
+                else
+                    Debug.LogWarning("Obstacle hit, але не знайдено ObstaclesDestroyer!");
             }
+
+            if (other.CompareTag("Coin"))
+            {
+                SignalToChangeCoin();
+                Destroy(other.gameObject);
+            }
+        }
+
+        private void SignalToChangeCoin()
+        {
+            GameModels.AddCoin(1);
         }
 
         private void ToLeft(InputAction.CallbackContext obj)

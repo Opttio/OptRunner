@@ -9,6 +9,7 @@ namespace _OprRunner.Scripts.Character
         private IsGroundCondition _isGroundCondition;
         private static readonly int JumpStartTrigger =  Animator.StringToHash("JumpStart");
         private static readonly int IsGroundedBool = Animator.StringToHash("isGrounded");
+        private static readonly int RollStartTrigger = Animator.StringToHash("RollStart");
         
         private void Awake()
         {
@@ -33,6 +34,11 @@ namespace _OprRunner.Scripts.Character
         public void TriggerJumpAnimation()
         {
             _animator.SetTrigger(JumpStartTrigger);
+        }
+        
+        public void TriggerRollAnimation()
+        {
+            _animator.SetTrigger(RollStartTrigger);
         }
     }
 }

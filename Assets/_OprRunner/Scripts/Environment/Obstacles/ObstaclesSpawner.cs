@@ -9,7 +9,7 @@ namespace _OprRunner.Scripts.Environment.Obstacles
         [SerializeField] private GameObject[] _obstaclesPrefab;
         [SerializeField] private Transform _spawnPoint;
         [SerializeField] private Transform _obstaclesHolder;
-        [SerializeField] private int _spawnTimer;
+        [SerializeField] private float _spawnTimer;
 
         private Coroutine _spawnRoutine;
 
