@@ -24,6 +24,8 @@ namespace _OprRunner.Scripts.Character
         [SerializeField] private Collider _characterLowCollider;
         [Header("Animation")]
         [SerializeField] private CharacterRunnerAnimation _characterRunnerAnimation;
+        [Header("Invulnerability")]
+        [SerializeField] private float _invulnerabilityDuration;
         
         public float GroundCheckDistance => _groundCheckDistance;
         
@@ -33,8 +35,10 @@ namespace _OprRunner.Scripts.Character
         private Coroutine _smoothMoveRoutine;
         private Coroutine _jumpRoutine;
         private readonly int _startAttempts = 3;
+        private bool _isInvulnerable;
 
         private ConditionActionExecutor _executor;
+        private IsInvulnerabilityCondition _isInvulnerabilityCondition;
 
         private void Awake()
         {
@@ -54,8 +58,13 @@ namespace _OprRunner.Scripts.Character
             var rollCondition = new AndCondition(new IsGroundCondition(transform, _groundCheckDistance),
                 new RollInputCondition(_playerInputAction, new IsGroundCondition(transform, _groundCheckDistance)));
             var rollAction = new RollAction(_rollDuration, _characterHighCollider,_characterLowCollider, _characterRunnerAnimation, this);
+            _isInvulnerabilityCondition = new IsInvulnerabilityCondition();
+            var oneShotCondition = new OneShotCondition(_isInvulnerabilityCondition);
+            var invulnerabilityAction = new InvulnerabilityAction(transform, _invulnerabilityDuration, this, oneShotCondition, SetInvulnerable,_isInvulnerabilityCondition);
+
             _executor.AddRule(jumpCondition, jumpAction);
             _executor.AddRule(rollCondition, rollAction);
+            _executor.AddRule(oneShotCondition, invulnerabilityAction);
             
             GameModels.Attempt = _startAttempts;
             GameEventBus.ChangeAttempt(GameModels.Attempt);
@@ -74,7 +83,7 @@ namespace _OprRunner.Scripts.Character
         {
             _playerInputAction.Disable();
         }
-
+        #region Movement
         private void AssignStripes()
         {
             if (!_road)
@@ -135,10 +144,11 @@ namespace _OprRunner.Scripts.Character
             transform.position = new Vector3(targetPosition.x, transform.position.y, transform.position.z);
             _smoothMoveRoutine = null;
         }
+        #endregion
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Obstacle"))
+            if (!_isInvulnerable && other.CompareTag("Obstacle"))
             {
                 GameModels.ViewId = 2;
                 GameEventBus.ChangeView(GameModels.ViewId);
@@ -159,6 +169,18 @@ namespace _OprRunner.Scripts.Character
                 SignalToChangeCoin();
                 Destroy(other.gameObject);
             }
+
+            if (other.CompareTag("Invulnerability"))
+            {
+                _isInvulnerabilityCondition.SetInvisible(true);
+                Destroy(other.gameObject);
+            }
+        }
+        
+        public void SetInvulnerable(bool value)
+        {
+            _isInvulnerable = value;
+            Debug.Log($"SetInvulnerable: {_isInvulnerable}");
         }
 
         private void SignalToChangeCoin()

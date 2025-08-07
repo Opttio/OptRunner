@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2044308445960382956}
   - component: {fileID: 5260830838464526611}
-  - component: {fileID: 5087954396637088977}
   - component: {fileID: -6713480841119712156}
   - component: {fileID: 8315176434684637262}
   m_Layer: 0
@@ -52,27 +51,6 @@ MonoBehaviour:
   _noSpawnZoneMask:
     serializedVersion: 2
     m_Bits: 256
---- !u!135 &5087954396637088977
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 495637392936323278}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Radius: 0.3
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!54 &-6713480841119712156
 Rigidbody:
   m_ObjectHideFlags: 0

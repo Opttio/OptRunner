@@ -794,7 +794,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1199017220}
   m_Layer: 0
-  m_Name: CoinsHolder
+  m_Name: BoostersHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -886,7 +886,7 @@ GameObject:
   - component: {fileID: 1279436557}
   - component: {fileID: 1279436558}
   m_Layer: 0
-  m_Name: CoinSpawner
+  m_Name: BoosterSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -922,12 +922,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a921046cb4f04ac0a5282f6cb380582f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _coinPrefab: {fileID: 495637392936323278, guid: 7193432d4aa6b5244bb4385d9bb9dfe0, type: 3}
+  _boosterPrefabs:
+  - {fileID: 495637392936323278, guid: 7193432d4aa6b5244bb4385d9bb9dfe0, type: 3}
+  - {fileID: 7228785049710878552, guid: 55199ba39b79cfb4d9ff1c71463909c2, type: 3}
+  _invulnerabilityChance: 3
   _spawnPoints:
   - {fileID: 1692798567}
   - {fileID: 622468891}
   - {fileID: 1485742024}
-  _coinHolder: {fileID: 1199017220}
+  _boosterHolder: {fileID: 1199017220}
   _spawnTimer: 0.25
 --- !u!4 &1301603711 stripped
 Transform:

@@ -7,6 +7,7 @@ TagManager:
   - ObstaclesCleaner
   - Obstacle
   - Coin
+  - Invulnerability
   layers:
   - Default
   - TransparentFX

@@ -994,6 +994,7 @@ MonoBehaviour:
   _characterHighCollider: {fileID: 6334159292790881514}
   _characterLowCollider: {fileID: 4039427550694564426}
   _characterRunnerAnimation: {fileID: 6713189050440154191}
+  _invulnerabilityDuration: 7
 --- !u!114 &6713189050440154191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1799,7 +1800,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5536123062436096700, guid: f3d078323ab376940b6fc44e737c09ac, type: 3}
+  - {fileID: 2100000, guid: 826fac31d4df4ef44acbce55d0e952c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
